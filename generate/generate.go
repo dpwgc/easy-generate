@@ -18,13 +18,7 @@ type Field struct {
 	Type string `yaml:"type"`
 }
 
-/**
- * 蛇形转驼峰
- * @description xx_yy to XxYx  xx_y_y to XxYY
- * @date 2020/7/30
- * @param s要转换的字符串
- * @return string
- **/
+// 下划线转驼峰
 func camelString(s string) string {
 	data := make([]byte, 0, len(s))
 	j := false
