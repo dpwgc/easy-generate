@@ -2,27 +2,20 @@ package generate
 
 import (
 	"fmt"
-	"gopkg.in/yaml.v3"
 )
 
 type JavaDTOGenerator struct {
 	config Config
 }
 
-func NewJavaDTOGenerator(text string) Generator {
-	var config Config
-	err := yaml.Unmarshal([]byte(text), &config)
-	if err != nil {
-		panic(err)
-	}
+func NewJavaDTOGenerator(config Config) Generator {
 	return &JavaDTOGenerator{
 		config: config,
 	}
 }
 
 const (
-	JavaDTOClassStart = `
-@Data
+	JavaDTOClassStart = `@Data
 @ApiModel(value = "%s")
 public class %sDTO {
 `
@@ -51,6 +44,9 @@ func (g *JavaDTOGenerator) Build() string {
 			res = res + fmt.Sprintf(JavaDTOField, v.Desc, v.Desc, "Double", firstToLower(camelString(v.Name)))
 			break
 		case "string":
+			res = res + fmt.Sprintf(JavaDTOField, v.Desc, v.Desc, "String", firstToLower(camelString(v.Name)))
+			break
+		case "text":
 			res = res + fmt.Sprintf(JavaDTOField, v.Desc, v.Desc, "String", firstToLower(camelString(v.Name)))
 			break
 		case "time":

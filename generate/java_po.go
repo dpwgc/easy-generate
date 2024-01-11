@@ -2,27 +2,20 @@ package generate
 
 import (
 	"fmt"
-	"gopkg.in/yaml.v3"
 )
 
 type JavaPOGenerator struct {
 	config Config
 }
 
-func NewJavaPOGenerator(text string) Generator {
-	var config Config
-	err := yaml.Unmarshal([]byte(text), &config)
-	if err != nil {
-		panic(err)
-	}
+func NewJavaPOGenerator(config Config) Generator {
 	return &JavaPOGenerator{
 		config: config,
 	}
 }
 
 const (
-	JavaPOClassStart = `
-@Data
+	JavaPOClassStart = `@Data
 @TableName(value = "%s")
 public class %sPO {
 `
@@ -50,6 +43,9 @@ func (g *JavaPOGenerator) Build() string {
 			res = res + fmt.Sprintf(JavaPOField, v.Desc, "Double", firstToLower(camelString(v.Name)))
 			break
 		case "string":
+			res = res + fmt.Sprintf(JavaPOField, v.Desc, "String", firstToLower(camelString(v.Name)))
+			break
+		case "text":
 			res = res + fmt.Sprintf(JavaPOField, v.Desc, "String", firstToLower(camelString(v.Name)))
 			break
 		case "time":

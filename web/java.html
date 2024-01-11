@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ch" xmlns="http://www.w3.org/1999/html">
+<meta charset="utf-8">
+<head>
+    <title>easy generate</title>
+    <script crossorigin="anonymous" integrity="sha384-LVoNJ6yst/aLxKvxwp6s2GAabqPczfWh6xzm38S/YtjUyZ+3aTKOnD/OJVGYLZDl" src="https://lib.baomitu.com/jquery/3.5.0/jquery.min.js"></script>
+    <script>
+        window.onload = function(){
+            document.getElementById("config").value="table: student_info\n" +
+                "desc: 学生信息\n" +
+                "fields:\n" +
+                "\n" +
+                "  - name: id\n" +
+                "    desc: 主键id\n" +
+                "    type: long\n" +
+                "\n" +
+                "  - name: name\n" +
+                "    desc: 姓名\n" +
+                "    type: string\n" +
+                "\n" +
+                "  - name: weight\n" +
+                "    desc: 体重\n" +
+                "    type: float\n" +
+                "\n" +
+                "  - name: birth_date\n" +
+                "    desc: 出生日期\n" +
+                "    type: date\n" +
+                "\n" +
+                "  - name: remark\n" +
+                "    desc: 备注\n" +
+                "    type: text\n" +
+                "\n" +
+                "  - name: status\n" +
+                "    desc: 状态\n" +
+                "    type: int\n" +
+                "\n" +
+                "  - name: update_time\n" +
+                "    desc: 更新时间\n" +
+                "    type: time" +
+                "\n"
+        }
+        function build() {
+            buildMysql()
+            buildJavaPO()
+            buildJavaDTO()
+        }
+        function buildMysql() {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/build/"+"mysql", true);
+            xhr.setRequestHeader("Content-Type", "application/x-yaml");
+            xhr.onreadystatechange = function() {
+                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                    $("#mysql").val(xhr.responseText)
+                } else {
+                    const result = JSON.parse(xhr.responseText);
+                    $("#mysql").val(result.msg)
+                }
+            };
+            xhr.send($("#config").val())
+        }
+        function buildJavaPO() {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/build/"+"java_po", true);
+            xhr.setRequestHeader("Content-Type", "application/x-yaml");
+            xhr.onreadystatechange = function() {
+                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                    $("#java_po").val(xhr.responseText)
+                } else {
+                    const result = JSON.parse(xhr.responseText);
+                    $("#java_po").val(result.msg)
+                }
+            };
+            xhr.send($("#config").val())
+        }
+        function buildJavaDTO() {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/build/"+"java_dto", true);
+            xhr.setRequestHeader("Content-Type", "application/x-yaml");
+            xhr.onreadystatechange = function() {
+                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                    $("#java_dto").val(xhr.responseText)
+                } else {
+                    const result = JSON.parse(xhr.responseText);
+                    $("#java_dto").val(result.msg)
+                }
+            };
+            xhr.send($("#config").val())
+        }
+    </script>
+    <style>
+        .box_form {
+            font-weight: 600;
+        }
+        .box_card {
+            margin: 20px
+        }
+        .box_card_title {
+            color: #016666
+        }
+    </style>
+</head>
+<body>
+<form class="box_form">
+
+    <div class="box_card" style="width: 40%;float: left">
+        <label class="box_card_title">代码生成配置（YAML）</label><br>
+        <label for="config"></label><textarea id="config" rows="40" cols="70"></textarea>
+        <button type="button" onclick="build()" style="height:40px;width: 180px">一键生成</button>
+    </div>
+
+    <div style="width: 55%;float: right">
+        <div class="box_card">
+            <label class="box_card_title">MySQL建表语句</label><br>
+            <label for="mysql"></label><textarea id="mysql" rows="16" cols="90"></textarea>
+        </div>
+
+        <div class="box_card">
+            <label class="box_card_title">JavaPO对象</label><br>
+            <label for="java_po"></label><textarea id="java_po" rows="16" cols="90"></textarea>
+        </div>
+
+        <div class="box_card">
+            <label class="box_card_title">JavaDTO对象</label><br>
+            <label for="java_dto"></label><textarea id="java_dto" rows="16" cols="90"></textarea>
+        </div>
+    </div>
+</form>
+<br>
+</body>
+</html>

@@ -2,33 +2,28 @@ package generate
 
 import (
 	"fmt"
-	"gopkg.in/yaml.v3"
 )
 
 type MySQLGenerator struct {
 	config Config
 }
 
-func NewMySQLGenerator(text string) Generator {
-	var config Config
-	err := yaml.Unmarshal([]byte(text), &config)
-	if err != nil {
-		panic(err)
-	}
+func NewMySQLGenerator(config Config) Generator {
 	return &MySQLGenerator{
 		config: config,
 	}
 }
 
 const (
-	MySQLCreateStart = "\nCREATE TABLE `%s` ("
-	MySQLCreateEnd   = ") COMMENT='%s';\n"
-	MySQLField       = "  `%s` %s NOT NULL DEFAULT %s COMMENT '%s',\n"
+	MySQLCreateStart  = "CREATE TABLE `%s` ("
+	MySQLCreateEnd    = ") COMMENT='%s';\n"
+	MySQLField        = "  `%s` %s NOT NULL DEFAULT %s COMMENT '%s',\n"
+	MySQLCanNullField = "  `%s` %s COMMENT '%s',\n"
 )
 
 func (g *MySQLGenerator) Build() string {
 	res := ""
-	fmt.Println(fmt.Sprintf(MySQLCreateStart, g.config.Table))
+	res = res + fmt.Sprintln(fmt.Sprintf(MySQLCreateStart, g.config.Table))
 	for _, v := range g.config.Fields {
 		switch v.Type {
 		case "int":
@@ -42,6 +37,9 @@ func (g *MySQLGenerator) Build() string {
 			break
 		case "string":
 			res = res + fmt.Sprintf(MySQLField, v.Name, "varchar(200)", "''", v.Desc)
+			break
+		case "text":
+			res = res + fmt.Sprintf(MySQLCanNullField, v.Name, "text", v.Desc)
 			break
 		case "time":
 			res = res + fmt.Sprintf(MySQLField, v.Name, "datetime", "'1900-01-01 00:00:00'", v.Desc)
