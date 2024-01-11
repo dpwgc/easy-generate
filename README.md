@@ -20,4 +20,5 @@
 
 ## 注意
 
-* yaml配置中的类型'type'只支持: 'int','long','float','string','text','time','date'
+* yaml配置中的类型'type'只支持: 'int', 'long', 'float', 'string', 'text', 'time', 'date'
+* time对应java的LocalDateTime，date对应java的LocalDate
